@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-black: #0b0b0b;
+            --card-dark: #161616;
+            --main-purple: #8b5cf6;
+            --dark-purple: #4c1d95;
+            --text-gray: #a1a1aa;
+            --white: #ffffff;
+            --modal-bg: rgba(0, 0, 0, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--white);
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        nav {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--dark-purple);
+            background: var(--bg-black);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 600; color: var(--main-purple); }
+        nav ul { display: flex; list-style: none; }
+        nav ul li { margin-left: 20px; }
+        nav ul li a { text-decoration: none; color: var(--white); font-size: 0.9rem; }
+
+        /* --- ส่วนแนะนำตัวแบบมีกรอบรูป --- */
+        .hero {
+            padding: 80px 10% 40px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .profile-frame {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid var(--main-purple);
+            overflow: hidden;
+            box-shadow: 0 0 20px var(--dark-purple);
+            background: var(--card-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-text h1 { font-size: 3rem; margin-bottom: 10px; }
+        .hero-text span { color: var(--main-purple); }
+        .hero-text p { color: var(--text-gray); max-width: 500px; }
+
+        section { padding: 60px 10%; }
+        h2 { font-size: 1.8rem; margin-bottom: 30px; border-left: 5px solid var(--main-purple); padding-left: 15px; }
+
+        /* --- ส่วนผลงาน --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .item {
+            background: var(--card-dark);
+            border-radius: 12px;
+            border: 1px solid #333;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .item:hover { border-color: var(--main-purple); transform: translateY(-5px); }
+
+        .item-img {
+            width: 100%;
+            height: 180px;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            overflow: hidden;
+        }
+
+        .item-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        .item-info { padding: 20px; }
+        .item-info h3 { color: var(--main-purple); margin-bottom: 8px; }
+        .item-info p { color: var(--text-gray); font-size: 0.85rem; }
+
+        /* --- ระบบขยายรูป (Modal) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--modal-bg);
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: var(--card-dark);
+            margin: auto;
+            padding: 25px;
+            border: 2px solid var(--main-purple);
+            width: 90%;
+            max-width: 800px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: var(--white);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .modal-img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: #000;
+        }
+
+        .modal-text h3 { color: var(--main-purple); font-size: 1.5rem; margin-bottom: 15px; }
+        .modal-text p { color: var(--white); line-height: 1.8; }
+
+        .skills { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .skill-tag { background: var(--dark-purple); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; }
+
+        footer { padding: 40px; background: #000; text-align: center; border-top: 1px solid #222; }
+
+        @media (max-width: 600px) {
+            .hero { text-align: center; justify-content: center; }
+            .hero-text h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">MY SPACE</div>
+        <ul>
+            <li><a href="#about">aboutme</a></li>
+            <li><a href="#work">EXP</a></li>
+            <li><a href="#contact">contact</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero">
+        <div class="profile-frame">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kL1KAdQYmKXle/giphy.gif" alt="รูปโปรไฟล์">
+        </div>
+        <div class="hero-text">
+            <h1>ชื่อ<span>ของคุณ</span></h1>
+            <p>คนเขียนโค้ด / ทำกราฟิก / ชอบเรียนรู้สิ่งใหม่ๆ (แก้คำตรงนี้ได้เลย)</p>
+        </div>
+    </header>
+
+    <section id="about">
+        <h2>ทำอะไรเป็นบ้าง?</h2>
+        <div class="skills">
+            <div class="skill-tag">HTML / CSS</div>
+            <div class="skill-tag">JavaScript</div>
+            <div class="skill-tag">Photoshop</div>
+            <div class="skill-tag">ตัดต่อวิดีโอ</div>
+        </div>
+    </section>
+
+    <section id="work">
+        <h2>ผลงานที่เคยทำ (คลิกเพื่อดูรายละเอียด)</h2>
+        <div class="grid">
+            <div class="item" onclick="openModal('Project A', 'อันนี้คือรายละเอียดแบบเต็มๆ ของโปรเจกต์ A คุณทำอะไรบ้าง ใช้วิธีไหน มีความยากยังไง เขียนอธิบายยาวๆ ตรงนี้ได้เลยครับ', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pO4UHglOY2vII/giphy.gif')">
+                <div class="item-img"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pO4UHglOY2vII/giphy.gif" alt="งาน 1"></div>
+                <div class="item-info">
+                    <h3>โปรเจกต์ A</h3>
+                    <p>อธิบายสั้นๆ ว่างานนี้คืออะไร...</p>
+                </div>
+            </div>
+            <div class="item" onclick="openModal('Project B', 'รายละเอียดของโปรเจกต์ B ทำขึ้นเพื่ออะไร ใช้ทักษะด้านไหนบ้าง อธิบายให้คนอ่านเข้าใจภาพรวมของงาน', 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dDR6cjdweGd1dmh3NWtmdGd3eDhmODZla3phdmFvbnpiNnYxbTU2dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/EN07uCL8sMNj26GO2g/giphy.gif')">
+                <div class="item-img"><img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dDR6cjdweGd1dmh3NWtmdGd3eDhmODZla3phdmFvbnpiNnYxbTU2dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/EN07uCL8sMNj26GO2g/giphy.gif" alt="งาน 2"></div>
+                <div class="item-info">
+                    <h3>โปรเจกต์ B</h3>
+                    <p>คำอธิบายสั้นๆ เกี่ยวกับงานชิ้นที่สอง</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <img id="modalImg" class="modal-img" src="" alt="ขยายรูป">
+            <div class="modal-text">
+                <h3 id="modalTitle">ชื่อผลงาน</h3>
+                <p id="modalDesc">รายละเอียดแบบเจาะลึก...</p>
+            </div>
+        </div>
+    </div>
+
+    <section id="contact" style="text-align: center;">
+        <h2>ติดต่อฉัน</h2>
+        <p>Email: yourname@email.com | Line: @yourname</p>
+    </section>
+
+    <footer>
+        <p style="color: #444;">&copy; nincandy</p>
+    </footer>
+
+    <script>
+        function openModal(title, desc, imgSrc) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('modalImg').src = imgSrc;
+            document.getElementById('projectModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('projectModal').style.display = "none";
+        }
+
+        // คลิกข้างนอกกล่องแล้วให้ปิดเอง
+        window.onclick = function(event) {
+            let modal = document.getElementById('projectModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
