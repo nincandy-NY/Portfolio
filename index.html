@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Portfolio test</title>
-    <link rel="icon" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kL1KAdQYmKXle/giphy.gif"
+    <link rel="icon" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kL1KAdQYmKXle/giphy.gif">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;600&display=swap" rel="stylesheet">
     
     <style>
@@ -45,11 +45,37 @@
         }
 
         .logo { font-size: 1.5rem; font-weight: 600; color: var(--main-purple); }
-        nav ul { display: flex; list-style: none; }
+        nav ul { display: flex; list-style: none; align-items: center; }
         nav ul li { margin-left: 20px; }
         nav ul li a { text-decoration: none; color: var(--white); font-size: 0.9rem; }
 
-        /* --- ส่วนแนะนำตัวแบบมีกรอบรูป --- */
+        /* ส่วนแสดงจำนวนคนออนไลน์ */
+        .online-status {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--main-purple);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--main-purple);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981; /* สีเขียว */
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
         .hero {
             padding: 80px 10% 40px;
             display: flex;
@@ -84,7 +110,6 @@
         section { padding: 60px 10%; }
         h2 { font-size: 1.8rem; margin-bottom: 30px; border-left: 5px solid var(--main-purple); padding-left: 15px; }
 
-        /* --- ส่วนผลงาน --- */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -119,7 +144,6 @@
         .item-info h3 { color: var(--main-purple); margin-bottom: 8px; }
         .item-info p { color: var(--text-gray); font-size: 0.85rem; }
 
-        /* --- ระบบขยายรูป (Modal) --- */
         .modal {
             display: none;
             position: fixed;
@@ -173,6 +197,8 @@
         @media (max-width: 600px) {
             .hero { text-align: center; justify-content: center; }
             .hero-text h1 { font-size: 2.2rem; }
+            nav { flex-direction: column; gap: 15px; }
+            nav ul { margin-top: 10px; }
         }
     </style>
 </head>
@@ -181,6 +207,7 @@
     <nav>
         <div class="logo">MY SPACE</div>
         <ul>
+            <li><div class="online-status"><span class="dot"></span> Online: <span id="online-count">1</span></div></li>
             <li><a href="#about">Aboutme</a></li>
             <li><a href="#work">EXP</a></li>
             <li><a href="#contact">Contact</a></li>
@@ -210,14 +237,14 @@
     <section id="work">
         <h2>ผลงานที่เคยทำ (คลิกเพื่อดูรายละเอียด)</h2>
         <div class="grid">
-            <div class="item" onclick="openModal('Project A', 'อันนี้คือรายละเอียดแบบเต็มๆ ของโปรเจกต์ A คุณทำอะไรบ้าง ใช้วิธีไหน มีความยากยังไง เขียนอธิบายยาวๆ ตรงนี้ได้เลยครับ', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pO4UHglOY2vII/giphy.gif')">
+            <div class="item" onclick="openModal('Project A', 'อันนี้คือรายละเอียดแบบเต็มๆ ของโปรเจกต์ A...', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pO4UHglOY2vII/giphy.gif')">
                 <div class="item-img"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pO4UHglOY2vII/giphy.gif" alt="งาน 1"></div>
                 <div class="item-info">
                     <h3>โปรเจกต์ A</h3>
                     <p>อธิบายสั้นๆ ว่างานนี้คืออะไร...</p>
                 </div>
             </div>
-            <div class="item" onclick="openModal('Project B', 'รายละเอียดของโปรเจกต์ B ทำขึ้นเพื่ออะไร ใช้ทักษะด้านไหนบ้าง อธิบายให้คนอ่านเข้าใจภาพรวมของงาน', 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dDR6cjdweGd1dmh3NWtmdGd3eDhmODZla3phdmFvbnpiNnYxbTU2dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/EN07uCL8sMNj26GO2g/giphy.gif')">
+            <div class="item" onclick="openModal('Project B', 'รายละเอียดของโปรเจกต์ B...', 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dDR6cjdweGd1dmh3NWtmdGd3eDhmODZla3phdmFvbnpiNnYxbTU2dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/EN07uCL8sMNj26GO2g/giphy.gif')">
                 <div class="item-img"><img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dDR6cjdweGd1dmh3NWtmdGd3eDhmODZla3phdmFvbnpiNnYxbTU2dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/EN07uCL8sMNj26GO2g/giphy.gif" alt="งาน 2"></div>
                 <div class="item-info">
                     <h3>โปรเจกต์ B</h3>
@@ -247,7 +274,47 @@
         <p style="color: #444;">&copy; nincandy</p>
     </footer>
 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <script>
+        // --- 1. Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAnPDK7to2DWFnti490ri8YRCBkpTajOHY",
+            authDomain: "pokdeng-61c5e.firebaseapp.com",
+            databaseURL: "https://pokdeng-61c5e-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "pokdeng-61c5e",
+            storageBucket: "pokdeng-61c5e.firebasestorage.app",
+            messagingSenderId: "518814980796",
+            appId: "1:518814980796:web:32b310d1a0b2bc7d058eb9",
+            measurementId: "G-BL0BWF915J"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const onlineUsersRef = database.ref('online_status');
+
+        // --- 2. Real-time Presence Logic ---
+        const amOnline = database.ref('.info/connected');
+        amOnline.on('value', (snapshot) => {
+            if (snapshot.val() === true) {
+                // เมื่อเราเชื่อมต่อ (เข้าเว็บ) สร้าง Node ใหม่ใต้ online_status
+                const myRef = onlineUsersRef.push();
+                
+                // เมื่อเราหลุดการเชื่อมต่อ (ปิดเว็บ) ให้ลบ Node นี้ทิ้ง
+                myRef.onDisconnect().remove();
+                myRef.set(true);
+            }
+        });
+
+        // ฟังการเปลี่ยนแปลงของจำนวน Node เพื่ออัปเดต UI
+        onlineUsersRef.on('value', (snapshot) => {
+            const count = snapshot.numChildren();
+            document.getElementById('online-count').innerText = count;
+        });
+
+        // --- 3. UI Functions ---
         function openModal(title, desc, imgSrc) {
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalDesc').innerText = desc;
@@ -259,7 +326,6 @@
             document.getElementById('projectModal').style.display = "none";
         }
 
-        // คลิกข้างนอกกล่องแล้วให้ปิดเอง
         window.onclick = function(event) {
             let modal = document.getElementById('projectModal');
             if (event.target == modal) {
