@@ -17,103 +17,104 @@ let currentFacingMode = "user";
 let localStream = null;
 let peerConnection = null;
 
-// --- Login Logic ---
 function checkLogin() {
     const pass = document.getElementById('pass-input').value;
-    const overlay = document.getElementById('login-overlay');
-    
-    if (pass === "admin1234") { // รหัสแอดมิน
+    if (pass === "admin1234") { 
         isAdmin = true;
         document.getElementById('admin-panel').style.display = "block";
-        overlay.style.display = "none";
+        document.getElementById('login-overlay').style.display = "none";
         initWebRTC();
-    } else if (pass === "user") { // รหัสผู้ใช้ปกติ
+    } else if (pass === "user") { 
         isAdmin = false;
-        overlay.style.display = "none";
+        document.getElementById('login-overlay').style.display = "none";
         initWebRTC();
     } else {
         alert("รหัสผ่านไม่ถูกต้อง!");
     }
 }
 
-// --- Online Count ---
-database.ref('online_users').on('value', (snap) => {
-    document.getElementById('user-online-count').innerText = snap.numChildren();
-});
-
-// --- WebRTC Logic ---
 async function initWebRTC() {
     peerConnection = new RTCPeerConnection(pcConfig);
 
     if (!isAdmin) {
-        // ฝั่ง User: เริ่มส่งภาพ
+        // --- ฝั่ง USER (ผู้ถูกส่อง) ---
         await startUserCamera();
-        listenForCameraSwitch();
+        
+        // ส่ง ICE Candidate ไปให้ Admin
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                database.ref('ice_candidates/user').push(event.candidate.toJSON());
+            }
+        };
+
+        // รับคำสั่งสลับกล้อง
+        database.ref('camera_control').on('value', async (snap) => {
+            const mode = snap.val()?.facingMode;
+            if (mode && mode !== currentFacingMode) {
+                currentFacingMode = mode;
+                await startUserCamera();
+            }
+        });
+
+        // รับ Answer จาก Admin
+        database.ref('stream_signal/answer').on('value', async (snap) => {
+            if (snap.exists() && !peerConnection.currentRemoteDescription) {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(snap.val()));
+            }
+        });
+
+        // รับ ICE จาก Admin
+        database.ref('ice_candidates/admin').on('child_added', (snap) => {
+            peerConnection.addIceCandidate(new RTCIceCandidate(snap.val()));
+        });
+
     } else {
-        // ฝั่ง Admin: รอรับภาพ
-        setupAdminReceiver();
+        // --- ฝั่ง ADMIN (ผู้ส่อง) ---
+        peerConnection.ontrack = (event) => {
+            document.getElementById('remoteVideo').srcObject = event.streams[0];
+        };
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                database.ref('ice_candidates/admin').push(event.candidate.toJSON());
+            }
+        };
+
+        // ฟัง Offer จาก User
+        database.ref('stream_signal/offer').on('value', async (snap) => {
+            if (snap.exists()) {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(snap.val()));
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                database.ref('stream_signal/answer').set({ type: answer.type, sdp: answer.sdp });
+            }
+        });
+
+        // รับ ICE จาก User
+        database.ref('ice_candidates/user').on('child_added', (snap) => {
+            peerConnection.addIceCandidate(new RTCIceCandidate(snap.val()));
+        });
     }
 }
 
 async function startUserCamera() {
-    try {
-        if(localStream) {
-            localStream.getTracks().forEach(track => track.stop());
-        }
-        
-        // ขออนุญาตใช้กล้อง (ไม่เปิด Preview ให้ผู้ใช้เห็น)
-        localStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: currentFacingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
-            audio: true
-        });
-        
-        document.getElementById('localVideo').srcObject = localStream;
-
-        // ส่ง Stream เข้า PeerConnection
-        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-        
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-        database.ref('stream_signal').set({ offer: { type: offer.type, sdp: offer.sdp } });
-
-    } catch (e) {
-        console.error("Camera access denied:", e);
-    }
-}
-
-function setupAdminReceiver() {
-    database.ref('stream_signal/offer').on('value', async (snap) => {
-        const offer = snap.val();
-        if (offer) {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-            database.ref('stream_signal/answer').set({ type: answer.type, sdp: answer.sdp });
-        }
+    if(localStream) localStream.getTracks().forEach(t => t.stop());
+    
+    localStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: currentFacingMode },
+        audio: true
     });
-
-    peerConnection.ontrack = (event) => {
-        const remoteVideo = document.getElementById('remoteVideo');
-        if (remoteVideo.srcObject !== event.streams[0]) {
-            remoteVideo.srcObject = event.streams[0];
-            console.log("Stream Received");
-        }
-    };
+    
+    document.getElementById('localVideo').srcObject = localStream;
+    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+    
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+    database.ref('stream_signal/offer').set({ type: offer.type, sdp: offer.sdp });
+    database.ref('ice_candidates').remove(); // ล้างค่าเก่า
 }
 
-// แอดมินสั่งสลับกล้อง
 function switchCamera() {
-    currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
-    database.ref('camera_control').set({ facingMode: currentFacingMode, ts: Date.now() });
-}
-
-// ผู้ใช้คอยฟังคำสั่งสลับกล้อง
-function listenForCameraSwitch() {
-    database.ref('camera_control').on('value', (snap) => {
-        const data = snap.val();
-        if (data && data.facingMode !== currentFacingMode) {
-            currentFacingMode = data.facingMode;
-            startUserCamera(); 
-        }
-    });
+    const newMode = currentFacingMode === "user" ? "environment" : "user";
+    database.ref('camera_control').set({ facingMode: newMode });
 }
