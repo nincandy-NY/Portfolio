@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio test</title>
+    <title>My Portfolio - Remote Camera</title>
     <link rel="icon" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kL1KAdQYmKXle/giphy.gif">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;600&display=swap" rel="stylesheet">
     
@@ -16,21 +16,11 @@
             --text-gray: #a1a1aa;
             --white: #ffffff;
             --modal-bg: rgba(0, 0, 0, 0.9);
+            --online-green: #10b981;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Kanit', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-black);
-            color: var(--white);
-            line-height: 1.5;
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+        body { background-color: var(--bg-black); color: var(--white); line-height: 1.5; scroll-behavior: smooth; }
 
         nav {
             padding: 20px 5%;
@@ -49,7 +39,6 @@
         nav ul li { margin-left: 20px; }
         nav ul li a { text-decoration: none; color: var(--white); font-size: 0.9rem; }
 
-        /* ส่วนแสดงจำนวนคนออนไลน์ */
         .online-status {
             background: rgba(139, 92, 246, 0.1);
             border: 1px solid var(--main-purple);
@@ -64,219 +53,93 @@
         .dot {
             width: 8px;
             height: 8px;
-            background-color: #10b981; /* สีเขียว */
+            background-color: var(--online-green);
             border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 8px #10b981;
+            box-shadow: 0 0 8px var(--online-green);
             animation: pulse 2s infinite;
         }
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        .hero {
-            padding: 80px 10% 40px;
+        /* Camera Styles */
+        .camera-container {
             display: flex;
-            align-items: center;
-            gap: 40px;
             flex-wrap: wrap;
-        }
-
-        .profile-frame {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 4px solid var(--main-purple);
-            overflow: hidden;
-            box-shadow: 0 0 20px var(--dark-purple);
-            background: var(--card-dark);
-            display: flex;
-            align-items: center;
+            gap: 20px;
             justify-content: center;
+            margin-top: 30px;
         }
-
-        .profile-frame img {
+        .video-box {
+            background: var(--card-dark);
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 10px;
+            text-align: center;
             width: 100%;
-            height: 100%;
+            max-width: 400px;
+        }
+        .video-box p { margin-bottom: 10px; color: var(--main-purple); font-size: 0.9rem; }
+        video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 10px;
             object-fit: cover;
         }
-
-        .hero-text h1 { font-size: 3rem; margin-bottom: 10px; }
-        .hero-text span { color: var(--main-purple); }
-        .hero-text p { color: var(--text-gray); max-width: 500px; }
+        .btn-call {
+            background: var(--main-purple);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .btn-call:hover { background: var(--dark-purple); }
 
         section { padding: 60px 10%; }
         h2 { font-size: 1.8rem; margin-bottom: 30px; border-left: 5px solid var(--main-purple); padding-left: 15px; }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .item {
-            background: var(--card-dark);
-            border-radius: 12px;
-            border: 1px solid #333;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .item:hover { border-color: var(--main-purple); transform: translateY(-5px); }
-
-        .item-img {
-            width: 100%;
-            height: 180px;
-            background: #222;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #444;
-            overflow: hidden;
-        }
-
-        .item-img img { width: 100%; height: 100%; object-fit: cover; }
-
-        .item-info { padding: 20px; }
-        .item-info h3 { color: var(--main-purple); margin-bottom: 8px; }
-        .item-info p { color: var(--text-gray); font-size: 0.85rem; }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--modal-bg);
-            padding: 40px;
-            overflow-y: auto;
-        }
-
-        .modal-content {
-            background: var(--card-dark);
-            margin: auto;
-            padding: 25px;
-            border: 2px solid var(--main-purple);
-            width: 90%;
-            max-width: 800px;
-            border-radius: 15px;
-            position: relative;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            color: var(--white);
-            font-size: 2rem;
-            cursor: pointer;
-        }
-
-        .modal-img {
-            width: 100%;
-            max-height: 400px;
-            object-fit: contain;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            background: #000;
-        }
-
-        .modal-text h3 { color: var(--main-purple); font-size: 1.5rem; margin-bottom: 15px; }
-        .modal-text p { color: var(--white); line-height: 1.8; }
-
-        .skills { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .skill-tag { background: var(--dark-purple); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; }
-
-        footer { padding: 40px; background: #000; text-align: center; border-top: 1px solid #222; }
-
-        @media (max-width: 600px) {
-            .hero { text-align: center; justify-content: center; }
-            .hero-text h1 { font-size: 2.2rem; }
-            nav { flex-direction: column; gap: 15px; }
-            nav ul { margin-top: 10px; }
-        }
+        footer { padding: 40px; background: #000; text-align: center; border-top: 1px solid #222; color: #444; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">MY SPACE</div>
+        <div class="logo">CAM MONITOR</div>
         <ul>
             <li><div class="online-status"><span class="dot"></span> Online: <span id="online-count">1</span></div></li>
-            <li><a href="#about">Aboutme</a></li>
-            <li><a href="#work">EXP</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#camera">กล้องสด</a></li>
         </ul>
     </nav>
 
-    <header class="hero">
-        <div class="profile-frame">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kL1KAdQYmKXle/giphy.gif" alt="รูปโปรไฟล์">
-        </div>
-        <div class="hero-text">
-            <h1>ชื่อ<span>ของคุณ</span></h1>
-            <p>คนเขียนโค้ด / ทำกราฟิก / ชอบเรียนรู้สิ่งใหม่ๆ (แก้คำตรงนี้ได้เลย)</p>
-        </div>
-    </header>
-
-    <section id="about">
-        <h2>ทำอะไรเป็นบ้าง?</h2>
-        <div class="skills">
-            <div class="skill-tag">HTML / CSS</div>
-            <div class="skill-tag">JavaScript</div>
-            <div class="skill-tag">Photoshop</div>
-            <div class="skill-tag">ตัดต่อวิดีโอ</div>
-        </div>
-    </section>
-
-    <section id="work">
-        <h2>ผลงานที่เคยทำ (คลิกเพื่อดูรายละเอียด)</h2>
-        <div class="grid">
-            <div class="item" onclick="openModal('Project A', 'อันนี้คือรายละเอียดแบบเต็มๆ ของโปรเจกต์ A...', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pO4UHglOY2vII/giphy.gif')">
-                <div class="item-img"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGQycnB2ZGZ0NWo2azZ5MHM3ZzNnNzM3c3p3a2F5Z2F4Y3Mxd2d5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pO4UHglOY2vII/giphy.gif" alt="งาน 1"></div>
-                <div class="item-info">
-                    <h3>โปรเจกต์ A</h3>
-                    <p>อธิบายสั้นๆ ว่างานนี้คืออะไร...</p>
-                </div>
+    <section id="camera">
+        <h2>ระบบส่องกล้อง Real-time</h2>
+        <p style="color: var(--text-gray);">กดปุ่ม "เปิดกล้อง" เพื่อเริ่มแชร์วิดีโอของคุณ และรับชมกล้องจากเครื่องอื่นที่เชื่อมต่อ</p>
+        
+        <div class="camera-container">
+            <div class="video-box">
+                <p>● กล้องของคุณ (Local)</p>
+                <video id="localVideo" autoplay playsinline muted></video>
             </div>
-            <div class="item" onclick="openModal('Project B', 'รายละเอียดของโปรเจกต์ B...', 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dDR6cjdweGd1dmh3NWtmdGd3eDhmODZla3phdmFvbnpiNnYxbTU2dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/EN07uCL8sMNj26GO2g/giphy.gif')">
-                <div class="item-img"><img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dDR6cjdweGd1dmh3NWtmdGd3eDhmODZla3phdmFvbnpiNnYxbTU2dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/EN07uCL8sMNj26GO2g/giphy.gif" alt="งาน 2"></div>
-                <div class="item-info">
-                    <h3>โปรเจกต์ B</h3>
-                    <p>คำอธิบายสั้นๆ เกี่ยวกับงานชิ้นที่สอง</p>
-                </div>
+            <div class="video-box">
+                <p>● กล้องที่กำลังรับชม (Remote)</p>
+                <video id="remoteVideo" autoplay playsinline></video>
             </div>
         </div>
-    </section>
 
-    <div id="projectModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <img id="modalImg" class="modal-img" src="" alt="ขยายรูป">
-            <div class="modal-text">
-                <h3 id="modalTitle">ชื่อผลงาน</h3>
-                <p id="modalDesc">รายละเอียดแบบเจาะลึก...</p>
-            </div>
+        <div style="text-align: center;">
+            <button id="startBtn" class="btn-call">เปิดกล้องและเริ่มเชื่อมต่อ</button>
         </div>
-    </div>
-
-    <section id="contact" style="text-align: center;">
-        <h2>ติดต่อฉัน</h2>
-        <p>Email: yourname@email.com | Line: @yourname</p>
     </section>
 
     <footer>
-        <p style="color: #444;">&copy; nincandy</p>
+        <p>&copy; 2026 nincandy | WebRTC via Firebase</p>
     </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-     <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
